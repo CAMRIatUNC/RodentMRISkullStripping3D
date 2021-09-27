@@ -2,20 +2,29 @@ import numpy as np
 from .utils import dim_2_categorical
 
 
-def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras):
+def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
     # reset the variables
     patch_dims = pre_paras.patch_dims
     label_dims = pre_paras.patch_label_dims
     strides = pre_paras.patch_strides
     n_class = pre_paras.n_class
+    meanvalue = pre_paras.meanvalue
 
+    if meanvalue is None and pre_paras.issubtract:
+        meanvalue = DB.mean_patch_generation(img,patch_dims,3)
+    if meanvalue is not None:
+        meanvalue = meanvalue[np.newaxis,:]
+    
+    
     # build new variables for output
     length, col, row = img.shape
     categorical_map = np.zeros((n_class, length, col, row), dtype=np.uint8)
     likelihood_map = np.zeros((length, col, row), dtype=np.float32)
     counter_map = np.zeros((length,col,row), dtype=np.float32)
     length_step = int(patch_dims[0]/2)
-
+    
+    
+    
     """-----predict the whole image from two directions, small to large and large to small----"""
     for i in range(0, length-patch_dims[0]+1, strides[0]):
         for j in range(0, col-patch_dims[1]+1, strides[1]):
@@ -26,8 +35,10 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras):
                                                              patch_dims[0],
                                                              patch_dims[1],
                                                              patch_dims[2]])
+                              
+                
                 if keras_paras.img_format == 'channels_last':
-                    cur_patch = np.transpose(cur_patch, (0, 2, 3, 1))
+                    cur_patch = np.transpose(cur_patch, (0, 2, 3, 4, 1))
 
                 cur_patch_output = seg_net.predict(cur_patch, batch_size=1, verbose=0)
 
@@ -56,7 +67,7 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras):
                               j-patch_dims[1]:j,
                               k-patch_dims[2]:k][:].reshape([1, patch_dims[0], patch_dims[1], patch_dims[2]])
                 if keras_paras.img_format == 'channels_last':
-                    cur_patch = np.transpose(cur_patch, (0, 2, 3, 1))
+                    cur_patch = np.transpose(cur_patch, (0, 2, 3, 4, 1))
 
                 cur_patch_output = seg_net.predict(cur_patch, batch_size=1, verbose=0)
 
