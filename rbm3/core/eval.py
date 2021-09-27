@@ -8,7 +8,12 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
     label_dims = pre_paras.patch_label_dims
     strides = pre_paras.patch_strides
     n_class = pre_paras.n_class
-   
+    meanvalue = pre_paras.meanvalue
+    
+    if meanvalue is None and pre_paras.issubtract:
+        meanvalue = DB.mean_patch_generation(img,patch_dims,3)
+    if meanvalue is not None:
+        meanvalue = meanvalue[np.newaxis,:]
     
     
     # build new variables for output
@@ -30,7 +35,11 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
                                                              patch_dims[0],
                                                              patch_dims[1],
                                                              patch_dims[2]])
-                              
+                if pre_paras.issubtract:
+                    if meanvalue.shape!=cur_patch.shape:
+                        cur_patch[:,0:meanvalue.shape[1],:,:,:] = cur_patch[:,0:meanvalue.shape[1],:,:,:] - meanvalue
+                    else:
+                        cur_patch = cur_patch - meanvalue              
                 
                 if keras_paras.img_format == 'channels_last':
                     cur_patch = np.transpose(cur_patch, (0, 2, 3, 4, 1))
@@ -61,6 +70,14 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
                 cur_patch=img[i-patch_dims[0]:i,
                               j-patch_dims[1]:j,
                               k-patch_dims[2]:k][:].reshape([1, patch_dims[0], patch_dims[1], patch_dims[2]])
+                
+                if pre_paras.issubtract:
+                    if meanvalue.shape!=cur_patch.shape:
+                        cur_patch[:,0:meanvalue.shape[1],:,:,:] = cur_patch[:,0:meanvalue.shape[1],:,:,:] - meanvalue
+                    else:
+                        cur_patch = cur_patch - meanvalue   
+                               
+                
                 if keras_paras.img_format == 'channels_last':
                     cur_patch = np.transpose(cur_patch, (0, 2, 3, 4, 1))
 
