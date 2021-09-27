@@ -23,7 +23,8 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
     counter_map = np.zeros((length,col,row), dtype=np.float32)
     length_step = int(patch_dims[0]/2)
     
-    
+    addinputnum = len(add_input_list)
+
     
     """-----predict the whole image from two directions, small to large and large to small----"""
     for i in range(0, length-patch_dims[0]+1, strides[0]):
@@ -35,6 +36,11 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
                                                              patch_dims[0],
                                                              patch_dims[1],
                                                              patch_dims[2]])
+                for addidx in range(addinputnum):
+                    curaddpatch = add_input_list[addidx][i:i+patch_dims[0],j:j+patch_dims[1],k:k+patch_dims[2]][:].reshape([1,1,patch_dims[0],patch_dims[1],patch_dims[2]])
+                    cur_patch = np.append(cur_patch,curaddpatch,axis=1)
+                
+                
                 if pre_paras.issubtract:
                     if meanvalue.shape!=cur_patch.shape:
                         cur_patch[:,0:meanvalue.shape[1],:,:,:] = cur_patch[:,0:meanvalue.shape[1],:,:,:] - meanvalue
@@ -70,6 +76,10 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
                 cur_patch=img[i-patch_dims[0]:i,
                               j-patch_dims[1]:j,
                               k-patch_dims[2]:k][:].reshape([1, patch_dims[0], patch_dims[1], patch_dims[2]])
+                
+                for addidx in range(addinputnum):
+                    curaddpatch = add_input_list[addidx][i:i+patch_dims[0],j:j+patch_dims[1],k:k+patch_dims[2]][:].reshape([1,1,patch_dims[0],patch_dims[1],patch_dims[2]])
+                    cur_patch = np.append(cur_patch,curaddpatch,axis=1)
                 
                 if pre_paras.issubtract:
                     if meanvalue.shape!=cur_patch.shape:
