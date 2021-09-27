@@ -67,6 +67,8 @@ def main():
         pre_paras.patch_label_dims = [64, 64, 64]
         pre_paras.patch_strides = [16, 16, 16]
         pre_paras.n_class = 2
+        pre_paras.issubtract = 0
+        organids = [1]
 
         # Parameters for Keras model
         keras_paras = KerasParas()
@@ -76,7 +78,7 @@ def main():
         keras_paras.img_format = 'channels_last'
         keras_paras.model_path = os.path.join(os.path.dirname(__file__), 'rat_brain-3d_unet.hdf5')
 
-        brain_seg_prediction(input_path, output_path, voxsize, pre_paras, keras_paras)
+        brain_seg_prediction(input_path, output_path, voxsize, pre_paras, organids, keras_paras)
 
 
 if __name__ == '__main__':
