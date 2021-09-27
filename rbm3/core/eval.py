@@ -50,14 +50,14 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
                 cur_patch_out_label[cur_patch_out_label >= keras_paras.thd] = 1
                 cur_patch_out_label[cur_patch_out_label < keras_paras.thd] = 0
 
-                middle = i + length_step
+                # middle = i + length_step
                 cur_patch_out_label = dim_2_categorical(cur_patch_out_label,n_class)
 
-                categorical_map[:, middle, j:j+label_dims[1], k:k+label_dims[2]] \
-                    = categorical_map[:, middle, j:j+label_dims[1], k:k+label_dims[2]] + cur_patch_out_label
-                likelihood_map[middle, j:j+label_dims[1], k:k+label_dims[2]] \
-                    = likelihood_map[middle, j:j+label_dims[1], k:k+label_dims[2]] + cur_patch_output
-                counter_map[middle, j:j+label_dims[1], k:k+label_dims[2]] += 1
+                categorical_map[:, i:i+label_dims[0], j:j+label_dims[1], k:k+label_dims[2]] \
+                    = categorical_map[:, i:i+label_dims[0], j:j+label_dims[1], k:k+label_dims[2]] + cur_patch_out_label
+                likelihood_map[i:i+label_dims[0], j:j+label_dims[1], k:k+label_dims[2]] \
+                    = likelihood_map[i:i+label_dims[0], j:j+label_dims[1], k:k+label_dims[2]] + cur_patch_output
+                counter_map[i:i+label_dims[0], j:j+label_dims[1], k:k+label_dims[2]] += 1
 
     for i in range(length, patch_dims[0]-1, -strides[0]):
         for j in range(col, patch_dims[1]-1, -strides[1]):
@@ -79,13 +79,13 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
                 cur_patch_out_label[cur_patch_out_label >= keras_paras.thd] = 1
                 cur_patch_out_label[cur_patch_out_label < keras_paras.thd] = 0
 
-                middle = i - patch_dims[0] + length_step
+                # middle = i - patch_dims[0] + length_step
                 cur_patch_out_label = dim_2_categorical(cur_patch_out_label,n_class)
-                categorical_map[:, middle, j-label_dims[1]:j, k-label_dims[2]:k] = \
-                    categorical_map[:, middle, j-label_dims[1]:j, k-label_dims[2]:k] + cur_patch_out_label
-                likelihood_map[middle, j-label_dims[1]:j, k-label_dims[2]:k] = \
-                    likelihood_map[middle, j-label_dims[1]:j, k-label_dims[2]:k] + cur_patch_output
-                counter_map[middle, j-label_dims[1]:j, k-label_dims[2]:k] += 1
+                categorical_map[:, i-label_dims[0]:i, j-label_dims[1]:j, k-label_dims[2]:k] = \
+                    categorical_map[:, i-label_dims[0]:i, j-label_dims[1]:j, k-label_dims[2]:k] + cur_patch_out_label
+                likelihood_map[i-label_dims[0]:i, j-label_dims[1]:j, k-label_dims[2]:k] = \
+                    likelihood_map[i-label_dims[0]:i, j-label_dims[1]:j, k-label_dims[2]:k] + cur_patch_output
+                counter_map[i-label_dims[0]:i, j-label_dims[1]:j, k-label_dims[2]:k] += 1
 
     label_map = np.zeros([length,col,row],dtype=np.uint8)
     for idx in range(0,length):
