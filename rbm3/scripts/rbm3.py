@@ -11,8 +11,9 @@ import argparse
 
 
 def brain_seg_prediction(input_path, output_path, voxsize,
-                         pre_paras, keras_paras):
+                         pre_paras, organids, keras_paras):
     # load model
+    organnum = len(organids)
     seg_net = load_model(keras_paras.model_path,
                          custom_objects={'dice_coef_loss': dice_coef_loss,
                                          'dice_coef': dice_coef})
