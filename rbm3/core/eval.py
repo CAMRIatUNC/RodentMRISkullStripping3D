@@ -8,12 +8,7 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
     label_dims = pre_paras.patch_label_dims
     strides = pre_paras.patch_strides
     n_class = pre_paras.n_class
-    meanvalue = pre_paras.meanvalue
-
-    if meanvalue is None and pre_paras.issubtract:
-        meanvalue = DB.mean_patch_generation(img,patch_dims,3)
-    if meanvalue is not None:
-        meanvalue = meanvalue[np.newaxis,:]
+   
     
     
     # build new variables for output
