@@ -16,5 +16,12 @@ class PreParas:
         self.patch_label_dims = []
         self.patch_strides = []
         self.n_class = ''
+        self.organname = ''
+        self.stage = ''
+        self.meanvalue = None
+        self.negids = []
+        self.sortids = []
+        self.saveflag = ''
+        self.issubtract = 1
 
 
