@@ -21,7 +21,7 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
     categorical_map = np.zeros((n_class, length, col, row), dtype=np.uint8)
     likelihood_map = np.zeros((length, col, row), dtype=np.float32)
     counter_map = np.zeros((length,col,row), dtype=np.float32)
-    length_step = int(patch_dims[0]/2)
+    # length_step = int(patch_dims[0]/2)
     
     addinputnum = len(add_input_list)
 
@@ -32,7 +32,7 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
             for k in range(0, row-patch_dims[2]+1, strides[2]):
                 cur_patch=img[i:i+patch_dims[0],
                               j:j+patch_dims[1],
-                              k:k+patch_dims[2]][:].reshape([1,
+                              k:k+patch_dims[2]][:].reshape([1,1,
                                                              patch_dims[0],
                                                              patch_dims[1],
                                                              patch_dims[2]])
@@ -75,7 +75,7 @@ def out_LabelHot_map_3D(img, seg_net, pre_paras, keras_paras,add_input_list=[]):
 
                 cur_patch=img[i-patch_dims[0]:i,
                               j-patch_dims[1]:j,
-                              k-patch_dims[2]:k][:].reshape([1, patch_dims[0], patch_dims[1], patch_dims[2]])
+                              k-patch_dims[2]:k][:].reshape([1,1, patch_dims[0], patch_dims[1], patch_dims[2]])
                 
                 for addidx in range(addinputnum):
                     curaddpatch = add_input_list[addidx][i:i+patch_dims[0],j:j+patch_dims[1],k:k+patch_dims[2]][:].reshape([1,1,patch_dims[0],patch_dims[1],patch_dims[2]])
