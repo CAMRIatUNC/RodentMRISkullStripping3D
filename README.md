@@ -18,7 +18,7 @@ ex: conda install -c conda-forge scikit-image
 
 Instruction:
 1) install RodentMRISKullStripping
-'pip install rbm3=0.05'
+'pip install rbm3==0.0.5'
 2) Give the input and output folder, you should put all the image in NIfTI format in the input folder .
 'rbm3 -s 0.2 <input> <output>'
 -s: image resolution, this option could resample the image resolution (i.e., 0.1, 0.2 isotropic resolution) in the UNet
